@@ -1,0 +1,2 @@
+FLASK_APP=major
+FLASK_DEBUG=true
