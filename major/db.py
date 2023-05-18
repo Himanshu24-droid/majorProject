@@ -1,22 +1,23 @@
 import mysql.connector
 from flask import g,current_app
 import click
+import os
 
 def get_connection():
     if 'db' not in g:
         g.db=mysql.connector.connect(
-            host='localhost',
-            user='root',
-            password='himanshu24'
+            host=os.environ.get('host'),
+            user=os.environ.get('user'),
+            password=os.environ.get('password')
         )
         # print('Connection established.....')
     return g.db
 
 def get_db():
     db=mysql.connector.connect(
-        host='localhost',
-        user='root',
-        password='himanshu24',
+        host=os.environ.get('host'),
+        user=os.environ.get('user'),
+        password=os.environ.get('password'),
         database='major'
     )
     # print('Connection established.....')

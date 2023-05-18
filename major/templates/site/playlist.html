@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Playlist{% endblock %}
+{% block content %}
+    <button id="btn" onclick="showModal()">
+        <i class="fa fa-plus"></i>
+        Create Playlist
+    </button>
+    <ul>
+        {% for i in playlists %}
+            <li><a href="{{ url_for('site.pl', name=i[0]) }}">{{ i[0] }}</a></li>
+        {% endfor %}
+    </ul>
+    <div id="form" class="modal">
+        <div class="modal-content">
+            <span class="close" id="cls">&times;</span>
+            <form method="post">
+                <label for="name">Playlist Name</label>
+                <input type="text" name="name" value="My Playlist #{{ cnt+1 }}">
+                <input type="submit" value="Create">
+            </form>
+        </div>
+    </div>
+{% endblock %}

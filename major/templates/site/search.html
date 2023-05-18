@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}Search{% endblock %}
+
+{% block navbar %}
+    <div class="searchbar">
+        <form method="POST">
+            <i class="fa fa-search"></i>
+            <input type="search" name="search" placeholder="Search Song">
+            <!-- <input type="submit" value="Search"> -->
+        </form>
+    </div>
+{% endblock %}
+
+{% block content %}
+    {% if request.method=='POST' and 'search' in request.form %}
+    <div class="top">
+        <img src="{{ temp[0]['album']['images'][2]['url'] }}">
+        <a href="#" class="{{ temp[0]['id'] }}" id="myLink">
+            <i class="fa fa-play-circle fa-3x"></i>
+        </a>
+        <h2>{{ temp[0]['name'] }}</h2>
+        <p>
+            {% for i in temp[0]['artists'] %}
+                {{ i['name'] }},
+            {% endfor %}
+        <div class="dropdown">
+            <button onclick="myFunction()" class="dropbtn">...</button>
+            <div id="myDropdown" class="dropdown-content">
+                <a href="#" id="dropdown-link" onclick="rateModal()">Rate</a>
+                <a href="#">Add to Playlist</a>
+            </div>
+        </div>
+        </p>
+        <div id="rateform" class="modal">
+            <div class="modal-content">
+                <span class="close" id="ratecls">&times;</span>
+                <form method="post">
+                    <label for="rate">Rate Song</label>
+                    <input type="number" min="0" max="5" name="rate" required>
+                    <input type="submit" value="Rate">
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
+    {% endif %}
+{% endblock %}

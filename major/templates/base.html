@@ -1,30 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>{% block title%}{% endblock %} - Gaana</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+    <title>{% block title%}{% endblock %} - Music System</title>
 </head>
 <body>
-    <nav>
-        <h1>Gaana</h1>
-        <ul>
+	<div class="container">
+		<div class="sidebar">
+			<ul class="sidemenu">
+				<li>
+                    <a href="{{ url_for('site.index') }}"><i class="fa fa-home"></i> Home</a>
+                </li>
+				<li>
+                    <a href="{{ url_for('site.search') }}"><i class="fa fa-search"></i> Search</a>
+                </li>
+				<li>
+                    <a href="{{ url_for('site.playlist') }}"><i class="fa fa-list"></i> Playlist</a>
+                </li>
+                <li>
+                    <a href="#"><i class="fa fa-heart"></i> Liked Songs</a>
+                </li>
+			</ul>
+		</div>
+        <div class="navbar">
+            <div>
+                <h1>Music recommender System</h1>
+            </div>
+            {% block navbar %}{% endblock %}
+            <div class="auth">
+                <ul>
+                    {% if g.user %}
+                    <li><span>{{ g.user[1] }}</span></li>
+                    <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
+                    {% else %}
+                    <li><a href="{{ url_for('auth.register') }}">Register</a></li>
+                    <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+		</div>
+        <div class="content">
+            {% block content %}
+                {% for message in get_flashed_messages() %}
+                    <div class="flash">{{ message }}</div>
+                {% endfor %}   
+            {% endblock %}
+        </div>
+        <div class="footer">
             {% if g.user %}
-                <li><span>{{ g.user[1] }}</span></li>
-                <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
-            {% else %}
-                <li><a href="{{ url_for('auth.register') }}">Register</a></li>
-                <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+            <div class="player">
+                <iframe id="myFrame" style="border-radius:12px" src="https://open.spotify.com/embed/track/131yybV7A3TmC34a0qE8u8?utm_source=generator&theme=0" width="50%" height="100" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                <!-- <div class="player">
+                    <i class="fa fa-step-backward fa-lg"></i>
+                    <i class="fa fa-step-forward fa-lg"></i>
+                </div> -->
+            </div>
             {% endif %}
-        </ul>
-    </nav>
-    <section class="content">
-        <header>
-            {% block header %}{% endblock %}
-        </header>
-        {% for message in get_flashed_messages() %}
-            <div class="flash">{{ message }}</div>
-        {% endfor %}
-        {% block content %}{% endblock %}
-    </section>
+		</div>
+        <script src="{{ url_for('static', filename='main.js') }}"></script>
+	</div>
 </body>
 </html>

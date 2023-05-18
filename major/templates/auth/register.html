@@ -3,11 +3,34 @@
 {% block title %}Register{% endblock %}
 
 {% block content %}
-    <form method="POST">
-        <label for="email">Email</label>
-        <input type="email" name="email" id="email" required>
-        <label for="password">Password</label>
-        <input type="password" name="password" id="password" required>
-        <input type="submit" value="Register">
-    </form>
+    <div id="mymodal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="close">&times;</span>
+            <form method="POST">
+                <label for="email">Email</label>
+                <input type="email" name="email" id="email" required>
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" required>
+                <input type="submit" value="Register">
+            </form>
+        </div>
+    </div>
+    <script>
+        let modal = document.getElementById("mymodal");
+        let span = document.getElementById("close");
+
+        window.addEventListener("load", function(){
+        modal.style.display = "block";
+        })
+
+        span.onclick = function() {
+        modal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+        }
+    </script>
 {% endblock %}

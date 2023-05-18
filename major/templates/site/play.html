@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Play{% endblock %}
+
+{% block content %}
+<div class="details">
+    <img src="{{ track['album']['images'][1]['url'] }}">
+    <h1>{{ track['name'] }} - {{ track['album']['artists'][0]['name'] }}</h1>
+</div>
+<div class="opt">
+    <a href="{{ url_for('site.search') }}" class="{{ track['id'] }}" id="myLink"><i class="fa fa-play-circle fa-3x"></i></a>
+</div>
+<script src="{{ url_for('static', filename='main.js') }}"></script>
+{% endblock %}

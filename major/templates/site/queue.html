@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Queue{% endblock %}
+
+{% block content %}
+<h1>Queue</h1>
+{% if q==[] %}
+<p>Queue is empty</p>
+{% else %}
+
+<div class="song-list">
+    <ul>
+        {% for song in q %}
+        <li>
+            <div class="options">
+                <i class="fa fa-ellipsis-h"></i>
+            </div>
+            <a href="#" class="{{ song[3] }}" id="myLink">
+                <div class="image">
+                    <img src="{{ song[0] }}" width="60" height="60">
+                </div>
+                <div class="text">
+                    <p>{{ song[1] }} <br/>
+                        {{ song[2] }}
+                    </p>
+                </div>
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+{% endblock %}

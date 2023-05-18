@@ -29,7 +29,7 @@ def register():
                     (email,generate_password_hash(password))
                 )
                 db.commit()
-                db.close()
+
             except IntegrityError:
                 error=f"Email {email} already exists."
             else:
@@ -57,7 +57,7 @@ def login():
             (email,)
         )
         user=cur.fetchone()
-        db.close()
+
         if user is None:
             error="Incorrect Email."
         elif not check_password_hash(user[2], password):
@@ -68,6 +68,7 @@ def login():
             session['user_id']=user[0]
             return redirect(url_for('site.index'))
         flash(error)
+
     return render_template('auth/login.html')
 
 @bp.before_app_request
@@ -84,7 +85,7 @@ def load_logged_in_user():
             (user_id,)
         )
         g.user=cur.fetchone()
-        db.close()
+        
 
 @bp.route('/logout')
 def logout():
