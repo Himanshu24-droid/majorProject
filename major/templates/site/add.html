@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Add to playlist{% endblock %}
+
+{% block content %}
+    <div class="modal" id="plmenu">
+        <div class="modal-content">
+            <span class="close" id="plmenucls">&times;</span>
+            {% for i in playlists %}
+            <li>{{ i[0] }}</li>
+            {% endfor %}
+        </div>
+    </div>
+    <!-- <script>
+        let modal = document.getElementById("plmenu");
+        let span = document.getElementById("plmenucls");
+
+        window.addEventListener("load", function(){
+        modal.style.display = "block";
+        })
+
+        span.onclick = function() {
+        modal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+        }
+    </script> -->
+{% endblock %}

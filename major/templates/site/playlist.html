@@ -8,7 +8,7 @@
     </button>
     <ul>
         {% for i in playlists %}
-            <li><a href="{{ url_for('site.pl', name=i[0]) }}">{{ i[0] }}</a></li>
+            <li><a href="{{ url_for('site.pl', id=i[0]) }}">{{ i[1] }}</a></li>
         {% endfor %}
     </ul>
     <div id="form" class="modal">

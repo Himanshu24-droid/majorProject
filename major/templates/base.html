@@ -20,14 +20,17 @@
 				<li>
                     <a href="{{ url_for('site.playlist') }}"><i class="fa fa-list"></i> Playlist</a>
                 </li>
-                <li>
-                    <a href="#"><i class="fa fa-heart"></i> Liked Songs</a>
+				<li>
+                    <a href="{{ url_for('site.queue') }}"><i class="fa fa-queue"></i> Queue</a>
                 </li>
+                <!-- <li>
+                    <a href="#"><i class="fa fa-heart"></i> Liked Songs</a>
+                </li> -->
 			</ul>
 		</div>
         <div class="navbar">
             <div>
-                <h1>Music recommender System</h1>
+                <h1>Music Recommender System</h1>
             </div>
             {% block navbar %}{% endblock %}
             <div class="auth">

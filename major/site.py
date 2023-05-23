@@ -4,18 +4,12 @@ from flask import (
 from major.db import get_db
 from major.auth import login_required
 from major.extensions import sp, q, dic
+from major.recommendations import recommend_songs_by_similarity, recommend_songs_by_artist
 from mysql.connector import IntegrityError
 bp = Blueprint('site', __name__)
 
 @bp.route('/')
 def index():
-    # Get a list of seed artists and tracks
-    # seed_artists = ['4fEkbug6kZzzJ8eYX6Kbbp']
-    # seed_tracks = ['7fW9J3EpVWVN1ouv0slAs0']
-
-    # # Get recommendations based on the seed artists and tracks
-    # recommendations = sp.recommendations(seed_artists=seed_artists, seed_tracks=seed_tracks)
-    # x = recommendations(["3USxtqRwSYz57Ewm6wWRMp"], ["4yvcSjfu4PC0CYQyLy4wSq"])
     return render_template('site/index.html')
 
 @bp.route('/queue', methods=('GET', 'POST'))
@@ -33,6 +27,11 @@ def search():
     db=get_db()
     cur=db.cursor()
     error=None
+    cur.execute(
+        "SELECT DISTINCT name FROM playlist WHERE user_id=%s",
+        (g.user[0],)
+    )
+    playlists=cur.fetchall()
     if request.method=='POST':
         if 'search' in request.form:
             query=request.form['search']
@@ -42,36 +41,44 @@ def search():
             q.clear()
             rec = recommendations([temp[0]['id']], [temp[0]['artists'][0]['id']])
             q.append([rec['tracks'][0]['album']['images'][0]['url'],rec['tracks'][0]['name'],rec['tracks'][0]['artists'][0]['name'],rec['tracks'][0]['id']])
-            return render_template('site/search.html', temp=temp)
+            return render_template('site/search.html', temp=temp,playlists=playlists)
         elif 'rate' in request.form:
             rating=request.form['rate']
-            if not rating:
-                error="Rating is required."
+            try:
+                cur.execute(
+                    "INSERT INTO ratings(rating,user_id,song_id) VALUES(%s,%s,%s)",
+                    (rating,g.user[0],dic['song_id'],)
+                )
+                db.commit()
+            except IntegrityError:
+                cur.execute(
+                    "UPDATE ratings SET rating=%s WHERE user_id=%s and song_id=%s",
+                    (rating,g.user[0],dic['song_id'],)
+                )
+                db.commit()
+            else:
+                return redirect(url_for('site.search'))
+        elif 'pl' in request.form:
+            pl = request.form.get('pl')
             
-            if error is None:
-                try:
-                    cur.execute(
-                        "INSERT INTO ratings(rating,user_id,song_id) VALUES(%s,%s,%s)",
-                        (rating,g.user[0],dic['song_id'],)
-                    )
-                    db.commit()
-                except IntegrityError:
-                    cur.execute(
-                        "UPDATE ratings SET rating=%s WHERE user_id=%s and song_id=%s",
-                        (rating,g.user[0],dic['song_id'],)
-                    )
-                    db.commit()
-                else:
-                    return redirect(url_for('site.search'))
-
-            flash(error)
-    return render_template('site/search.html')
-
-@bp.route('/play/<id>', methods=('GET', 'POST'))
-@login_required
-def play(id):
-    track = sp.track(id)
-    return render_template('site/play.html',track=track)
+            cur.execute(
+                "SELECT id FROM playlist WHERE name=%s and user_id=%s",
+                (pl,g.user[0],)
+            )
+            
+            pl_id = cur.fetchone()[0]
+            try:
+                cur.execute(
+                    "INSERT INTO song(id,playlist_id) VALUES(%s,%s)",
+                    (dic['song_id'],pl_id,)
+                )
+                db.commit()
+            except IntegrityError:
+                flash("Song is already added in playlist.")
+            else:
+                return redirect(url_for('site.search'))
+                
+    return render_template('site/search.html',playlists=playlists)
 
 @bp.route('/playlist', methods=('GET','POST'))
 @login_required
@@ -83,8 +90,12 @@ def playlist():
         (g.user[0],)
     )
     cnt=cur.fetchone()[0]
+    # cur.execute(
+    #     "SELECT DISTINCT name FROM playlist WHERE user_id=%s",
+    #     (g.user[0],)
+    # )
     cur.execute(
-        "SELECT DISTINCT name FROM playlist WHERE user_id=%s",
+        "SELECT * FROM playlist WHERE user_id=%s",
         (g.user[0],)
     )
 
@@ -100,12 +111,27 @@ def playlist():
         return redirect(url_for('site.playlist', cnt=cnt))
     return render_template('site/playlist.html',cnt=cnt,playlists=playlists)
 
-@bp.route('/playlist/<name>', methods=('GET','POST'))
+@bp.route('/playlist/<id>', methods=('GET','POST'))
 @login_required
-def pl(name):
-    return render_template('site/pl.html')
+def pl(id):
+    db=get_db()
+    cur=db.cursor()
+    cur.execute(
+        "SELECT id FROM song WHERE playlist_id=%s",
+        (id,)
+    )
+    playlist_songs=cur.fetchall()
+    return render_template('site/pl.html',songs=playlist_songs)
 
 @bp.route('/add', methods=('GET', 'POST'))
 @login_required
-def add_to_playlist():
-    return render_template('site/add.html')
+def add():
+    db=get_db()
+    cur=db.cursor()
+    cur.execute(
+        "SELECT DISTINCT name FROM playlist WHERE user_id=%s",
+        (g.user[0],)
+    )
+    playlists=cur.fetchall()
+
+    return render_template('site/add.html',playlists=playlists)

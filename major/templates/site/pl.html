@@ -3,5 +3,9 @@
 {% block title %}Playlist{% endblock %}
 
 {% block content %}
-
+    <ul>
+        {% for song in songs %}
+        <li>{{ song[0] }}</li>
+        {% endfor %}
+    </ul>
 {% endblock %}

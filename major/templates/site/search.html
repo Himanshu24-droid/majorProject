@@ -6,7 +6,6 @@
         <form method="POST">
             <i class="fa fa-search"></i>
             <input type="search" name="search" placeholder="Search Song">
-            <!-- <input type="submit" value="Search"> -->
         </form>
     </div>
 {% endblock %}
@@ -26,8 +25,8 @@
         <div class="dropdown">
             <button onclick="myFunction()" class="dropbtn">...</button>
             <div id="myDropdown" class="dropdown-content">
-                <a href="#" id="dropdown-link" onclick="rateModal()">Rate</a>
-                <a href="#">Add to Playlist</a>
+                <a href="#" id="dropdown-link1" onclick="rateModal()">Rate</a>
+                <a href="#" id="dropdown-link2" onclick="plMenu()">Add to Playlist</a>
             </div>
         </div>
         </p>
@@ -38,6 +37,20 @@
                     <label for="rate">Rate Song</label>
                     <input type="number" min="0" max="5" name="rate" required>
                     <input type="submit" value="Rate">
+                </form>
+            </div>
+        </div>
+        <div class="modal" id="plmenu">
+            <div class="modal-content">
+                <span class="close" id="plmenucls">&times;</span>
+                <form method="post">
+                    {% for i in playlists %}
+                    <label for="pl">
+                        <input type="radio" name="pl" value="{{ i[0] }}">{{ i[0] }}
+                    </label>
+                    <br>
+                    {% endfor %}
+                    <input type="submit" value="Add">
                 </form>
             </div>
         </div>

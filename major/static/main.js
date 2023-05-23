@@ -37,17 +37,30 @@ function showModal(){
 
 function rateModal(){
     var frm = document.getElementById("rateform");
-    var btn = document.getElementById("dropdown-link");
+    var btn = document.getElementById("dropdown-link1");
     var cls = document.getElementById("ratecls");
 
     btn.addEventListener("click", function(event){
         event.preventDefault();
         frm.style.display="block";
     });
-    // btn.onclick = function(){
-    //     frm.style.display = "block";
-    // }
+
     cls.onclick = function() {
         frm.style.display = "none";
+    }
+}
+
+function plMenu(){
+    var list = document.getElementById("plmenu");
+    var btn = document.getElementById("dropdown-link2");
+    var cls = document.getElementById("plmenucls");
+
+    btn.addEventListener("click", function(event){
+        event.preventDefault();
+        list.style.display="block";
+    });
+
+    cls.onclick = function() {
+        list.style.display = "none";
     }
 }
